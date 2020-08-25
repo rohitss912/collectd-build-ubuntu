@@ -45,14 +45,18 @@ cd ..
 #Tar the new upstream code
 tar -cvzf collectd-5.11.1-1.tar.gz collectd-main
 
+# Update the current source with upstream changes
 cd "$SCRIPT_DIR"/collectd_source/collectd-5.11.0/
 uupdate -v 5.11.1-1 ../../collectd_latest/collectd-5.11.1-1.tar.gz
 cd ../collectd-5.11.1-1
 
+#Update failing Patch as per new source code.
 sed -i '/our \$TypesDB.*/d' ./debian/patches/collection_conf_path.patch
 
+# Recursively patches
 while $DQUILT push; do $DQUILT refresh; done
 
+# builds the debain package
 debuild -b -uc -us
 #TODO - dch
 

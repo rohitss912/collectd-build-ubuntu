@@ -34,17 +34,16 @@ ls -F
 mkdir -p "$SCRIPT_DIR"/collectd_latest
 cd "$SCRIPT_DIR"/collectd_latest
 
-wget https://github.com/collectd/collectd/archive/402e6b060cb81bce2a3905ccbca2ca6fbec73e43.zip
-unzip 402e6b060cb81bce2a3905ccbca2ca6fbec73e43.zip
+wget https://github.com/collectd/collectd/archive/collectd-5.12.zip
+unzip collectd-5.12.zip
 
-cp -rf collectd* collectd-main
-cd collectd-main
+cd collectd-collectd-5.12
 rm -rf docs .travis.yml .mailmap .gitmodules .github .clang-format .cirrus.yml
 #generates the configure and Makefile.in scripts
 ./build.sh
 cd ..
 #Tar the new upstream code
-tar -cvzf collectd-5.11.1-1.tar.gz collectd-main
+tar -cvzf collectd-5.11.1-1.tar.gz collectd-collectd-5.12
 
 # Update the current source with upstream changes
 cd "$SCRIPT_DIR"/collectd_source/collectd-5.11.0/
@@ -59,17 +58,18 @@ cat >> temp.txt <<END_TEXT
 confflags += --without-included-ltdl \\
                         --without-libgrpc++ \\
                         --without-libgps \\
-                        --without-liblua \\
-                        --without-libriemann \
+                        --without-libriemann_client \\
                         --without-libsigrok \\
                         --disable-cpusleep \\
                         --disable-dpdkstat \\
                         --disable-grpc \\
                         --disable-gps \\
+                        --disable-netstat_udp \\
                         --disable-lua \\
                         --disable-mqtt \\
                         --disable-intel_rdt \\
                         --disable-write_riemann \\
+                        --disable-write_prometheus \\
                         --disable-dpdkevents \\
                         --disable-intel_pmu \\
                         --disable-zone
@@ -80,10 +80,12 @@ END_TEXT
 
 sed -i '/--enable-all-plugins/r temp.txt' rules
 rm -f temp.txt
+rm -f patches/3512.patch
 cd ..
 
 #Update failing Patch as per new source code.
 sed -i '/our \$TypesDB.*/d' ./debian/patches/collection_conf_path.patch
+sed -i '/3512.patch/d' ./debian/patches/series
 
 # Recursively apply all patches
 while $DQUILT push; do $DQUILT refresh; done

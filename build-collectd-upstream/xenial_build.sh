@@ -14,6 +14,7 @@ tar -xvf collectd_5.11.0-7.debian.tar.xz && mv debian collectd/debian
 cd collectd
 echo 9 > debian/compat
 echo > debian/patches/series
+sed -i 's/varnish_la_LIBADD.*/varnish_la_LIBADD = \$(BUILD_WITH_LIBVARNISH_LIBS) -lm/g' Makefile.am
 
 #Update the rules file with collectd-signalfx settings
 cd debian
@@ -47,7 +48,8 @@ confflags += --without-included-ltdl \\
                         --disable-write_kafka \\
                         --disable-write_mongodb \\
                         --disable-write_prometheus \\
-                        --disable-write_stackdriver
+                        --disable-write_stackdriver \\
+                        --disable-static
 
 # SFX name length settings
 confflags += --with-data-max-name-len=1024

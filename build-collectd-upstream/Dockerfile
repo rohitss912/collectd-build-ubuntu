@@ -4,6 +4,4 @@ RUN apt-get update
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get -y install dpatch build-essential devscripts fakeroot quilt dh-make automake libdistro-info-perl autoconf flex bison libtool pkg-config pbuilder debootstrap wget debhelper dh-systemd po-debconf autotools-dev libltdl-dev libgcrypt20-dev libglib2.0-dev gcc python3-dev curl debian-archive-keyring curl gnupg2 apt-transport-https git equivs
-
-RUN curl -s https://packagecloud.io/install/repositories/varnishcache/varnish60lts/script.deb.sh | sudo bash
+RUN apt-get -y install dpatch build-essential devscripts fakeroot dh-make automake libdistro-info-perl autoconf flex bison libtool pkg-config pbuilder debootstrap wget debhelper dh-systemd po-debconf autotools-dev libltdl-dev libgcrypt20-dev libglib2.0-dev gcc python3-dev curl debian-archive-keyring curl gnupg2 apt-transport-https git equivs

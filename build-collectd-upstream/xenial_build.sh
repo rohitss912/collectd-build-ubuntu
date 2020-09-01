@@ -3,7 +3,15 @@ set -e
 
 SCRIPT_DIR=$(cd $(dirname $0) && pwd)
 
+OS=$(lsb_release -cs)
+VARNISH_VERSION="6.0.6-1~${OS}"
+
 mkdir -p "$SCRIPT_DIR/collectd-build" && cd "$SCRIPT_DIR"/collectd-build
+
+#Install Varnish 6.0.6LTS as build dependencies for collectd package build
+curl -s https://packagecloud.io/install/repositories/varnishcache/varnish60lts/script.deb.sh | sudo bash
+apt-get install -y varnish-dev="${VARNISH_VERSION}"
+apt-get install -y varnish="${VARNISH_VERSION}"
 
 #Pulls collectd 5.12 branch from git
 git clone -b collectd-5.12 --depth 1 https://github.com/collectd/collectd.git
